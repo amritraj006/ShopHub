@@ -107,6 +107,11 @@ const ProductDetails = () => {
                   imageLoading ? "opacity-0" : "opacity-100"
                 }`}
                 onLoad={() => setImageLoading(false)}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "https://via.placeholder.com/600x400?text=No+Image";
+                  setImageLoading(false);
+                }}
                 loading="lazy"
               />
             </div>
@@ -131,6 +136,10 @@ const ProductDetails = () => {
                       alt={`${product.name} view ${index + 1}`}
                       className="w-full h-full object-cover object-center"
                       loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "https://via.placeholder.com/300x200?text=No+Image";
+                      }}
                     />
                   </button>
                 ))}

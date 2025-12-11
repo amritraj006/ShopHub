@@ -43,7 +43,15 @@ export default function ProductCard({ product }) {
       className="cursor-pointer hover:scale-105 transition transform duration-300"
     >
       <div className="flex flex-col bg-white shadow-md w-72">
-        <img className="w-72 h-48 object-cover" src={product.image} alt={product.name} />
+        <img
+          className="w-72 h-48 object-cover"
+          src={product.image}
+          alt={product.name}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "https://via.placeholder.com/400x300?text=No+Image";
+          }}
+        />
         <div className="p-4 text-sm">
           <p className="text-slate-600">$ {product.price}</p>
           <p className="text-slate-800 text-base font-medium my-1.5">{product.name}</p>
