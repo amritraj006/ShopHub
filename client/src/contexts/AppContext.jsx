@@ -40,7 +40,7 @@ export const AppProvider = ({ children }) => {
         const res = await axios.get(`/api/cart/${user.id}`);
         setCartCount(res.data.cart?.length || 0);
       } catch (err) {
-        console.error("Fetch cart cccc count error:", err.message);
+        console.error("Fetch cart count error:", err.message);
       }
     };
     fetchCartCount();
