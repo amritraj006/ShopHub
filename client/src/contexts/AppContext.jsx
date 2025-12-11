@@ -4,6 +4,11 @@ import { useUser } from "@clerk/clerk-react";
 
 const AppContext = createContext();
 
+// API URL based on environment
+const API_URL = import.meta.env.VITE_MODE === "development"
+  ? "http://localhost:3000/api" 
+  : "https://shophub-y8b7.onrender.com/api";
+
 export const AppProvider = ({ children }) => {
   const [openSearch, setOpenSearch] = useState(false);
   const [products, setProducts] = useState([]);
@@ -21,7 +26,7 @@ export const AppProvider = ({ children }) => {
     const fetchProducts = async () => {
       setProductLoading(true);
       try {
-        const res = await axios.get("/api/products");
+        const res = await axios.get(`${API_URL}/products`);
         setProducts(res.data);
       } catch (err) {
         console.error(err.message);
@@ -37,7 +42,7 @@ export const AppProvider = ({ children }) => {
     const fetchCartCount = async () => {
       if (!isLoaded || !user) return setCartCount(0);
       try {
-        const res = await axios.get(`/api/cart/${user.id}`);
+        const res = await axios.get(`${API_URL}/cart/${user.id}`);
         setCartCount(res.data.cart?.length || 0);
       } catch (err) {
         console.error("Fetch cart count error:", err.message);
@@ -59,6 +64,7 @@ export const AppProvider = ({ children }) => {
         setOpenCart,
         cartUpdated,
         triggerCartUpdate,
+        API_URL,
       }}
     >
       {children}

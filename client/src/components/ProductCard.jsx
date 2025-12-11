@@ -8,24 +8,24 @@ import { toast } from "sonner";
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const { user, isLoaded } = useUser();
-  const { setCartCount, cartUpdated } = useAppContext();
+  const { setCartCount, cartUpdated, API_URL } = useAppContext();
 
   const [inCart, setInCart] = useState(false);
 
   // Check if product is in cart
   useEffect(() => {
     if (!isLoaded || !user) return;
-    axios.get(`/api/cart/${user.id}`)
+    axios.get(`${API_URL}/cart/${user.id}`)
       .then(res => setInCart(res.data.cart.some(item => item.product._id === product._id)))
       .catch(err => console.error(err));
-  }, [isLoaded, user, product._id, cartUpdated]);
+  }, [isLoaded, user, product._id, cartUpdated, API_URL]);
 
   const handleToggleCart = async (e) => {
     e.stopPropagation();
     if (!user) return alert("Please log in to add items to your cart.");
 
     try {
-      const res = await axios.post("/api/cart/toggle", {
+      const res = await axios.post(`${API_URL}/cart/toggle`, {
         userId: user.id,
         productId: product._id,
       });

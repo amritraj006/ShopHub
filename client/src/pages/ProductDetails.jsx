@@ -10,7 +10,7 @@ import { MoveRightIcon } from "lucide-react";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const { products, setCartCount, cartUpdated } = useAppContext();
+  const { products, setCartCount, cartUpdated, API_URL } = useAppContext();
   const { user, isLoaded } = useUser();
 
   const [product, setProduct] = useState(null);
@@ -29,7 +29,7 @@ const ProductDetails = () => {
       // Fetch single product from backend
       const fetchProduct = async () => {
         try {
-          const res = await axios.get(`/api/products/${id}`);
+          const res = await axios.get(`${API_URL}/products/${id}`);
           setProduct(res.data.product);
         } catch (err) {
           console.error("Failed to fetch product:", err);
@@ -37,18 +37,18 @@ const ProductDetails = () => {
       };
       fetchProduct();
     }
-  }, [id, products]);
+  }, [id, products, API_URL]);
 
   // Check if product is in cart
   useEffect(() => {
     if (!isLoaded || !user || !product) return;
     axios
-      .get(`/api/cart/${user.id}`)
+      .get(`${API_URL}/cart/${user.id}`)
       .then((res) => {
         setInCart(res.data.cart.some((item) => item.product._id === product._id));
       })
       .catch((err) => console.error(err));
-  }, [isLoaded, user, product, cartUpdated]);
+  }, [isLoaded, user, product, cartUpdated, API_URL]);
 
   const allImages = product
     ? [product.image, ...Object.values(product.secondaryImages || {})]
@@ -60,7 +60,7 @@ const ProductDetails = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("/api/cart/toggle", {
+      const res = await axios.post(`${API_URL}/cart/toggle`, {
         userId: user.id,
         productId: product._id,
         quantity,

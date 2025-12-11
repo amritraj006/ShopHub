@@ -12,15 +12,16 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [discountApplied, setDiscountApplied] = useState(false);
   const cartRef = useRef();
+  const { API_URL } = useAppContext();
 
   // Fetch cart items when sidebar opens
   useEffect(() => {
     if (!isLoaded || !user || !openCart) return;
     axios
-      .get(`/api/cart/${user.id}`)
+      .get(`${API_URL}/cart/${user.id}`)
       .then((res) => setCartItems(res.data.cart || []))
       .catch((err) => console.error("Cart fetch failed:", err));
-  }, [isLoaded, user, openCart]);
+  }, [isLoaded, user, openCart, API_URL]);
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -40,7 +41,7 @@ const Cart = () => {
   const handleQuantityChange = async (productId, newQty) => {
     if (newQty < 1 || newQty > 10) return;
     try {
-      const res = await axios.put("/api/cart/update", {
+      const res = await axios.put(`${API_URL}/cart/update`, {
         userId: user.id,
         productId,
         quantity: newQty,
@@ -56,7 +57,7 @@ const Cart = () => {
   // Remove product
   const handleRemove = async (productId) => {
     try {
-      const res = await axios.delete("/api/cart/remove", {
+      const res = await axios.delete(`${API_URL}/cart/remove`, {
         data: { userId: user.id, productId },
       });
       setCartItems(res.data.cart || []);
